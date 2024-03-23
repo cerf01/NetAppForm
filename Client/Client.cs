@@ -14,15 +14,14 @@ namespace ClientTest
 
         }
 
-        public bool IsConnected()
+        public void IsConnected()
         {
-            _clientSocket.Connect(_address, Service.Port);
+            _clientSocket.ConnectAsync(_address, Service.Port);
 
-            return _clientSocket.Connected;
         }
 
-        public async Task<string> GetMsgAsync() => Service.RecieveMsg(_clientSocket).Result;
-        
+        public async Task<string> GetMsgAsync() => Service.RecieveMsg(_clientSocket);
+
 
         public bool isIncorrectAnswer(string serverResp)
         {

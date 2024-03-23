@@ -33,6 +33,8 @@
             btnSend = new Button();
             richTextBoxChat = new RichTextBox();
             timer1 = new System.Windows.Forms.Timer(components);
+            panel1 = new Panel();
+            panel1.SuspendLayout();
             SuspendLayout();
             // 
             // textBoxMessage
@@ -55,23 +57,33 @@
             // richTextBoxChat
             // 
             richTextBoxChat.BackColor = SystemColors.ActiveCaption;
-            richTextBoxChat.Location = new Point(12, 10);
+            richTextBoxChat.Location = new Point(5, 4);
             richTextBoxChat.Name = "richTextBoxChat";
             richTextBoxChat.ReadOnly = true;
             richTextBoxChat.Size = new Size(679, 372);
             richTextBoxChat.TabIndex = 2;
             richTextBoxChat.Text = "";
             // 
+            // panel1
+            // 
+            panel1.Controls.Add(richTextBoxChat);
+            panel1.Location = new Point(7, 8);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(695, 373);
+            panel1.TabIndex = 3;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(703, 425);
-            Controls.Add(richTextBoxChat);
+            Controls.Add(panel1);
             Controls.Add(btnSend);
             Controls.Add(textBoxMessage);
+            FormBorderStyle = FormBorderStyle.Fixed3D;
             Name = "Form1";
             Text = "Form1";
+            panel1.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -82,5 +94,6 @@
         private Button btnSend;
         private RichTextBox richTextBoxChat;
         private System.Windows.Forms.Timer timer1;
+        private Panel panel1;
     }
 }

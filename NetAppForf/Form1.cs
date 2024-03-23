@@ -1,24 +1,29 @@
 using ClientTest;
+using System;
+using System.Diagnostics;
 
 namespace NetAppForm
 {
     public partial class Form1 : Form
     {
         private Client _client;
+        private bool _start;
+
         public Form1()
         {
             InitializeComponent();
             _client = new Client();
-            ConnectToServer();
+
+            Task.Run(() => { CheckConnection(); });
+            Task.Run(() => { ConnectToServer(); });
+            
         }
-
-
         private void btnSend_Click(object sender, EventArgs e)
         {
             _client.ReadMsg(textBoxMessage.Text);
         }
 
-        private void UpdateChatTextBox(string msg) 
+        private void UpdateChatTextBox(string msg)
         {
             if (richTextBoxChat.InvokeRequired)
             {
@@ -28,27 +33,25 @@ namespace NetAppForm
             {
                 richTextBoxChat.AppendText(msg + "\n");
             }
-           
-        }
 
-        private void UpdateTextBox(bool flag)
+        }
+        private void UpdatTextBox(bool flag)
         {
             if (textBoxMessage.InvokeRequired)
             {
-                textBoxMessage.Invoke(new Action<bool>(UpdateTextBox), flag);
+                textBoxMessage.Invoke(new Action<bool>(UpdatTextBox), flag);
             }
             else
             {
-              textBoxMessage.Enabled = flag;
+                textBoxMessage.Enabled = flag;
             }
 
         }
-
-        private void UpdateButton(bool flag)
+        private void UpdatBtn(bool flag)
         {
             if (btnSend.InvokeRequired)
             {
-                btnSend.Invoke(new Action<bool>(UpdateButton), flag);
+                btnSend.Invoke(new Action<bool>(UpdatBtn), flag);
             }
             else
             {
@@ -56,29 +59,41 @@ namespace NetAppForm
             }
 
         }
+
+
+        private async Task CheckConnection() 
+        {
+            while (true)
+            {
+               
+                if (_client.CheckConnected)
+                {
+                    UpdatBtn(true);
+                    UpdatTextBox(true);
+                    _start = true;
+                }
+                else
+                {
+                    UpdatBtn(false);
+                    UpdatTextBox(false);
+                    _start = false;
+                    _client.IsConnected();
+                }
+                await Task.Delay(1000);
+
+            }
+          
+        }
         private async Task ConnectToServer()
         {
-            if (!_client.CheckConnected)
+            while (true)
             {
-                if (!_client.IsConnected())
+                if (_start)
                 {
-                    btnSend.Enabled = false;
-                    textBoxMessage.Enabled = false;
-                    richTextBoxChat.Text = "NO CONNECTION!";
-                    return;
+                    var str = await _client.GetMsgAsync();
+
+                    UpdateChatTextBox(str);
                 }
-            }
-       
-            while (_client.CheckConnected)
-            {
-                var str = await _client.GetMsgAsync();
-                UpdateChatTextBox(str);
-
-                UpdateButton(true);
-
-                UpdateTextBox(true);
-
-                await Task.Delay(3000);
             }
             MessageBox.Show("NO CONNECTION!");
         }

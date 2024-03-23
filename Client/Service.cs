@@ -20,10 +20,10 @@ namespace ClientTest
 
         public static void ShowLog(Socket socket)
         {
-            Console.WriteLine($"At {DateTime.Now} from {socket.RemoteEndPoint} recieved line: {RecieveMsg(socket).Result}");
+            Console.WriteLine($"At {DateTime.Now} from {socket.RemoteEndPoint} recieved line: {RecieveMsg(socket)}");
         }
 
-        public static async Task<string> RecieveMsg(Socket socket)
+        public static string RecieveMsg(Socket socket)
         {
             var buffer = new byte[1024];
 
